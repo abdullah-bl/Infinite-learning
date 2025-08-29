@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Toaster } from 'sonner'
-import { TopicInput } from './components/TopicInput'
-import { CourseGenerator } from './components/CourseGenerator'
-import { CourseContent } from './components/CourseContent'
+import { TopicInput } from '@/components/TopicInput'
+import { CourseGenerator } from '@/components/CourseGenerator'
+import { CourseContent } from '@/components/CourseContent'
 import { useStore } from './store'
 
 function App() {

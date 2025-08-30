@@ -9,7 +9,7 @@ interface CourseGeneratorProps {
 }
 
 export function CourseGenerator({ topic, onCourseGenerated }: CourseGeneratorProps) {
-    const { addCourse, setIsGenerating } = useStore();
+    const { addCourse, setIsGenerating, settings } = useStore();
     const engineRef = useRef<any>(null);
     const isInitializingRef = useRef(false);
 
@@ -23,10 +23,10 @@ export function CourseGenerator({ topic, onCourseGenerated }: CourseGeneratorPro
 
                 // Initialize the engine if not already done
                 if (!engineRef.current) {
-                    toast.info('Initializing AI model... This may take a moment.');
+                    toast.info(`Initializing AI model (${settings.defaultModel})... This may take a moment.`);
                     engineRef.current = await CreateWebWorkerMLCEngine(
                         new Worker(new URL('../worker.ts', import.meta.url), { type: 'module' }),
-                        'Qwen3-0.6B-q4f32_1-MLC'
+                        settings.defaultModel
                     );
                     toast.success('AI model ready!');
                 }
@@ -61,13 +61,18 @@ Create exactly 3 lessons, each with 2 quiz questions. Make the content education
 
 Return ONLY the JSON object, no additional text.`;
 
+                // Create system message with language preference
+                const systemMessage = settings.language === 'auto'
+                    ? 'You are a helpful assistant that generates micro-courses about a given topic. You are also a teacher and you are very good at teaching. make sure to respond in the language of the user.'
+                    : `You are a helpful assistant that generates micro-courses about a given topic. You are also a teacher and you are very good at teaching. Always respond in ${settings.language} language.`;
+
                 const response = await engineRef.current.chat.completions.create({
                     messages: [
-                        { role: 'system', content: 'You are a helpful assistant that generates micro-courses about a given topic. You are also a teacher and you are very good at teaching. make sure to respond in the language of the user.' },
+                        { role: 'system', content: systemMessage },
                         { role: 'user', content: prompt }
                     ],
-                    max_tokens: 2000,
-                    temperature: 0.7,
+                    max_tokens: settings.maxTokens,
+                    temperature: settings.temperature,
                     response_format: { type: 'json_object' }
                 });
 
@@ -286,7 +291,7 @@ Return ONLY the JSON object, no additional text.`;
         };
 
         generateCourse();
-    }, [topic, addCourse, setIsGenerating, onCourseGenerated]);
+    }, [topic, addCourse, setIsGenerating, onCourseGenerated, settings]);
 
     return null; // This component doesn't render anything
 }

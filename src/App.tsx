@@ -3,7 +3,9 @@ import { Toaster } from 'sonner'
 import { TopicInput } from '@/components/TopicInput'
 import { CourseGenerator } from '@/components/CourseGenerator'
 import { CourseContent } from '@/components/CourseContent'
+import { Settings } from '@/components/Settings'
 import { useStore } from './store'
+import { Footer } from './components/footer'
 
 function App() {
   const [generatingTopic, setGeneratingTopic] = useState<string>('')
@@ -29,6 +31,9 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      {/* Settings Modal */}
+      <Settings />
+
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           {viewMode === 'input' ? (
@@ -84,6 +89,10 @@ function App() {
 
       {/* Toast notifications */}
       <Toaster position="top-right" />
+
+
+      {/* Footer */}
+      <Footer />
     </div>
   )
 }

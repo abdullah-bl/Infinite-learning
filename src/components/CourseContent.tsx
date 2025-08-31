@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { BookOpen, CheckCircle, PlayCircle, ArrowLeft, Trophy } from 'lucide-react';
 import { useStore } from '../store';
 import { Quiz } from './Quiz';
+import Markdown from 'react-markdown';
 
 interface Course {
     title: string;
@@ -119,7 +120,9 @@ export function CourseContent({ course, courseIndex, onBack }: CourseContentProp
                     <CardContent className="space-y-6">
                         <div className="prose prose-sm max-w-none">
                             <div className="whitespace-pre-wrap text-foreground leading-relaxed">
-                                {currentLesson.content}
+                                <Markdown>
+                                    {currentLesson.content}
+                                </Markdown>
                             </div>
                         </div>
 

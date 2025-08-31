@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { CreateWebWorkerMLCEngine } from '@mlc-ai/web-llm';
+import { CreateWebWorkerMLCEngine, WebWorkerMLCEngine } from '@mlc-ai/web-llm';
 import { useStore } from '../store';
 import { toast } from 'sonner';
 
@@ -10,7 +10,7 @@ interface CourseGeneratorProps {
 
 export function CourseGenerator({ topic, onCourseGenerated }: CourseGeneratorProps) {
     const { addCourse, setIsGenerating, settings } = useStore();
-    const engineRef = useRef<any>(null);
+    const engineRef = useRef<WebWorkerMLCEngine | null>(null);
     const isInitializingRef = useRef(false);
 
     useEffect(() => {
@@ -26,7 +26,12 @@ export function CourseGenerator({ topic, onCourseGenerated }: CourseGeneratorPro
                     toast.info(`Initializing AI model (${settings.defaultModel})... This may take a moment.`);
                     engineRef.current = await CreateWebWorkerMLCEngine(
                         new Worker(new URL('../worker.ts', import.meta.url), { type: 'module' }),
-                        settings.defaultModel
+                        settings.defaultModel,
+                        {
+                            initProgressCallback: (progress) => {
+                                console.log(`Initializing AI model (${settings.defaultModel})... ${progress}%`);
+                            }
+                        }
                     );
                     toast.success('AI model ready!');
                 }
@@ -291,6 +296,11 @@ Return ONLY the JSON object, no additional text.`;
         };
 
         generateCourse();
+
+        // Clear the topic after generation
+        return () => {
+            engineRef.current?.unload();
+        }
     }, [topic, addCourse, setIsGenerating, onCourseGenerated, settings]);
 
     return null; // This component doesn't render anything

@@ -7,7 +7,7 @@ import { BookOpen, Sparkles } from 'lucide-react';
 import { useStore } from '../store';
 
 interface TopicInputProps {
-    onGenerateCourse: (topic: string) => void;
+    onGenerateCourse: () => void;
 }
 
 export function TopicInput({ onGenerateCourse }: TopicInputProps) {
@@ -17,7 +17,7 @@ export function TopicInput({ onGenerateCourse }: TopicInputProps) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (inputTopic.trim() && !isGenerating) {
-            onGenerateCourse(inputTopic.trim());
+            onGenerateCourse();
         }
     };
 

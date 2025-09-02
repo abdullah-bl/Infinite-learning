@@ -44,7 +44,7 @@ interface Store extends InfiniteLearning {
 }
 
 const defaultSettings: Settings = {
-    defaultModel: 'Qwen3-0.6B-q4f32_1-MLC',
+    defaultModel: 'gemma-2-2b-it-q4f32_1-MLC',
     temperature: 0.7,
     maxTokens: 2000,
     language: 'auto',
